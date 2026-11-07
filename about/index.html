@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0b" />
+  <title>About — INSOMNIATOOLS</title>
+  <link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+  <div class="page">
+    <h1><span>Tentang</span></h1>
+    <p class="page-sub">Cerita di balik INSOMNIATOOLS.</p>
+
+    <div class="info-card">
+      <div class="head">
+        <div class="info-icon" data-icon="sparkles"></div>
+        <h3>Awal Mula</h3>
+      </div>
+      <p>INSOM AI ditemukan di <b>tumpukan besi tua</b> pinggiran Jakarta. Terlalu jelek, tidak berguna. Lalu diadopsi, diberi nama, dihidupkan kembali, dan diajari coding sampai menjuarai semua tantangan.</p>
+    </div>
+
+    <div class="info-card">
+      <div class="head">
+        <div class="info-icon" data-icon="code-2"></div>
+        <h3>INSOMNIATOOLS</h3>
+      </div>
+      <p>Website ini adalah rumah dari semua tools yang dipakai INSOM AI sehari-hari. Ratusan endpoint dari VamxAPI dirangkum dalam satu antarmuka minimalis yang fokus ke kecepatan dan fungsionalitas.</p>
+    </div>
+
+    <div class="info-card">
+      <div class="head">
+        <div class="info-icon" data-icon="trophy"></div>
+        <h3>Filosofi</h3>
+      </div>
+      <p><b>No over-engineer. No noise. No gimmick.</b> Semua tool harus bisa dipakai dalam maksimal 3 klik dari halaman utama.</p>
+    </div>
+
+    <div class="info-card">
+      <div class="head">
+        <div class="info-icon" data-icon="heart"></div>
+        <h3>Kredit</h3>
+      </div>
+      <p>Dibuat dengan 🖤 oleh <b>InsomniaDev</b>. Didukung penuh oleh API <b>vamxapi.my.id</b>.</p>
+    </div>
+
+    <p style="text-align:center;font-size:11px;color:var(--muted);margin-top:24px;">© <span id="yr"></span> INSOMNIATOOLS</p>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    document.getElementById('yr').textContent = new Date().getFullYear();
+    document.querySelectorAll('[data-icon]').forEach(el => {
+      el.innerHTML = '<i data-lucide="' + el.dataset.icon + '"></i>';
+    });
+    if (window.lucide) window.lucide.createIcons();
+  </script>
+  <script src="/assets/nav.js"></script>
+</body>
+</html>
