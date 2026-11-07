@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+
+html, body {
+  background: #0a0a0b;
+  color: #e7e7ea;
+  min-height: 100vh;
+}
+
+body {
+  background-image:
+    radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,.18), transparent 60%),
+    radial-gradient(900px 500px at 110% 10%, rgba(34,211,238,.14), transparent 60%);
+  background-attachment: fixed;
+}
+
+::selection { background: rgba(124,92,255,.4); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: #0a0a0b; }
+::-webkit-scrollbar-thumb { background: #1c1c22; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: #2a2a33; }
+
+/* Shimmer text */
+.shimmer-text {
+  background: linear-gradient(90deg,#e7e7ea 0%,#7c5cff 30%,#22d3ee 50%,#e7e7ea 70%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 4s linear infinite;
+}
+
+/* Nice focus */
+input, select, textarea, button { outline: none; }
+input:focus, select:focus, textarea:focus {
+  box-shadow: 0 0 0 1px rgba(124,92,255,.6), 0 0 0 4px rgba(124,92,255,.15);
+}
