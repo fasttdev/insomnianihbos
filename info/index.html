@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0b" />
+  <title>Info — INSOMNIATOOLS</title>
+  <link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+  <div class="page">
+    <h1><span>Informasi</span></h1>
+    <p class="page-sub">Detail teknis & statistik INSOMNIATOOLS.</p>
+
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-value" id="s-tools">0</div><div class="stat-label">Tools</div></div>
+      <div class="stat-box"><div class="stat-value" id="s-cat">0</div><div class="stat-label">Kategori</div></div>
+      <div class="stat-box"><div class="stat-value">0</div><div class="stat-label">VIP</div></div>
+    </div>
+
+    <div class="info-card">
+      <div class="row"><span class="k">Base URL</span><span class="v">vamxapi.my.id</span></div>
+      <div class="row"><span class="k">Auth</span><span class="v">Server-side</span></div>
+      <div class="row"><span class="k">Format</span><span class="v">JSON</span></div>
+      <div class="row"><span class="k">Metode</span><span class="v">GET / POST</span></div>
+      <div class="row"><span class="k">Region</span><span class="v">Asia/Jakarta</span></div>
+    </div>
+
+    <div class="info-card">
+      <h3 style="font-size:13px;font-weight:600;margin-bottom:8px;">Cara Pakai</h3>
+      <ol style="font-size:12px;color:var(--muted);line-height:1.8;padding-left:18px;">
+        <li>Pilih tool dari halaman <b>Tools</b></li>
+        <li>Isi parameter yang diminta</li>
+        <li>Klik <b>Jalankan</b>, tunggu response muncul</li>
+        <li>Copy / gunakan hasilnya</li>
+      </ol>
+    </div>
+
+    <div class="note">
+      <b>Catatan:</b> Semua request melalui proxy server — API key tidak pernah terekspos ke browser. Kuota mengikuti akun VamxAPI kamu. VIP tools tidak ditampilkan sesuai instruksi.
+    </div>
+  </div>
+
+  <script src="/assets/tools.js"></script>
+  <script>
+    document.getElementById('s-tools').textContent = window.TOOLS.length;
+    document.getElementById('s-cat').textContent = window.CATEGORIES.length;
+  </script>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="/assets/nav.js"></script>
+</body>
+</html>
