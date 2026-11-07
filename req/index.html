@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0b" />
+  <title>Request — INSOMNIATOOLS</title>
+  <link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+  <div class="page">
+    <h1><span>Request</span></h1>
+    <p class="page-sub">Minta tool baru atau laporkan bug.</p>
+
+    <div class="info-card">
+      <div class="head">
+        <div class="info-icon" data-icon="message-square-plus"></div>
+        <h3>Form Request</h3>
+      </div>
+      <p>Isi form di bawah, akan dibuka langsung ke WhatsApp InsomniaDev.</p>
+    </div>
+
+    <form id="reqForm" style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">
+      <div class="form-field">
+        <label><span>Nama Kamu</span><span class="param-key">nama</span></label>
+        <input type="text" class="form-input" id="rName" placeholder="Nama kamu" required />
+      </div>
+      <div class="form-field">
+        <label><span>Jenis Request</span><span class="param-key">tipe</span></label>
+        <select class="form-select" id="rType" required>
+          <option value="">-- Pilih --</option>
+          <option value="Tool Baru">Tool Baru</option>
+          <option value="Fitur Tambahan">Fitur Tambahan</option>
+          <option value="Bug Report">Bug Report</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label><span>Pesan</span><span class="param-key">pesan</span></label>
+        <textarea class="form-textarea" id="rMsg" placeholder="Jelaskan request kamu..." required style="min-height:120px;"></textarea>
+      </div>
+      <button type="submit" class="contact-btn">
+        <i data-lucide="send"></i> Kirim via WhatsApp
+      </button>
+    </form>
+
+    <div class="note" style="margin-top:20px;">
+      <b>Catatan:</b> Response biasanya dalam 1x24 jam. Untuk bug kritis, sertakan screenshot dan langkah reproduksi.
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script>
+    document.querySelectorAll('[data-icon]').forEach(el => {
+      el.innerHTML = '<i data-lucide="' + el.dataset.icon + '"></i>';
+    });
+    if (window.lucide) window.lucide.createIcons();
+
+    document.getElementById('reqForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nama = document.getElementById('rName').value.trim();
+      const tipe = document.getElementById('rType').value;
+      const pesan = document.getElementById('rMsg').value.trim();
+      const wa = '6281234567890'; // ganti nomor WA kamu
+      const text = `Halo InsomniaDev!%0A%0ANama: ${encodeURIComponent(nama)}%0ATipe: ${encodeURIComponent(tipe)}%0A%0APesan:%0A${encodeURIComponent(pesan)}`;
+      window.open('https://wa.me/' + wa + '?text=' + text, '_blank');
+    });
+  </script>
+  <script src="/assets/nav.js"></script>
+</body>
+</html>
