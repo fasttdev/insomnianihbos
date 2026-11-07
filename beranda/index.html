@@ -4,18 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0a0a0b" />
-  <title>INSOMNIATOOLS — Tools</title>
+  <title>INSOMNIATOOLS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/style.css" />
 </head>
 <body>
 
   <section class="hero">
-    <div class="badge">
-      <span class="badge-dot"></span>
-      <span id="toolCount">162</span> tools aktif
+    <div class="hero-tag">
+      <span class="hero-tag-dot"></span>
+      <span id="toolCount">0</span> tools siap pakai
     </div>
-    <h1 class="title">INSOMNIATOOLS</h1>
-    <p class="subtitle">Kumpulan tools VamxAPI. Cari, klik, eksekusi.</p>
+    <h1 class="title">INSOMNIA<span class="accent">TOOLS</span></h1>
+    <p class="subtitle">Semua kebutuhan, satu tempat.</p>
   </section>
 
   <div class="search-wrap">
@@ -26,18 +29,13 @@
   </div>
 
   <div class="chips" id="chipsWrap"></div>
-
   <div class="grid-wrap" id="gridWrap"></div>
 
-  <!-- Modal -->
   <div class="modal-bg" id="modalBg">
     <div class="modal">
       <div class="modal-head">
-        <div>
-          <div class="modal-meta">
-            <span class="tag GET" id="modalMethod">GET</span>
-            <span id="modalPath" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px;display:inline-block;">/</span>
-          </div>
+        <div style="min-width:0;flex:1;">
+          <div class="modal-cat" id="modalCat">—</div>
           <div class="modal-title" id="modalTitle">Tool</div>
           <div class="modal-sub" id="modalSub"></div>
         </div>
@@ -55,9 +53,7 @@
 
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script src="/assets/tools.js"></script>
-  <script>
-    document.getElementById('toolCount').textContent = window.TOOLS.length;
-  </script>
+  <script>document.getElementById('toolCount').textContent = window.TOOLS.length;</script>
   <script src="/assets/app.js"></script>
   <script src="/assets/nav.js"></script>
 </body>
