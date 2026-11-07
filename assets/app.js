@@ -13,12 +13,20 @@
 
   let state = { query: '', category: 'All', tool: null };
 
-  // ============ UTIL ============
+  // ============ HELPERS ============
   function esc(s) {
-    return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
   }
-  function isUrl(s) { return typeof s === 'string' && /^https?:\/\//i.test(s.trim()); }
-  function isArabic(s) { return typeof s === 'string' && /[\u0600-\u06FF]/.test(s); }
+
+  function isUrl(s) {
+    return typeof s === 'string' && /^https?:\/\//i.test(s.trim());
+  }
+
+  function isArabic(s) {
+    return typeof s === 'string' && /[\u0600-\u06FF]/.test(s);
+  }
 
   function urlType(u) {
     const p = u.split('?')[0].split('#')[0].toLowerCase();
@@ -61,9 +69,18 @@
     imam: 'Imam', qari: 'Qari', category: 'Kategori', kategori: 'Kategori',
     type: 'Tipe', tipe: 'Tipe', status: 'Status', gender: 'Gender',
     country: 'Negara', negara: 'Negara', city: 'Kota', kota: 'Kota',
-    latitude: 'Latitude', longitude: 'Longitude', timezone: 'Timezone'
+    latitude: 'Latitude', longitude: 'Longitude', timezone: 'Timezone',
+    province: 'Provinsi', kabupaten: 'Kabupaten', kecamatan: 'Kecamatan',
+    artist: 'Artis', album: 'Album', duration: 'Durasi', size: 'Ukuran',
+    extension: 'Ekstensi', quality: 'Kualitas', resolution: 'Resolusi',
+    season: 'Season', episode: 'Episode', rating: 'Rating', genre: 'Genre',
+    vote_average: 'Rating', overview: 'Ringkasan', release_date: 'Rilis',
+    popularity: 'Popularitas', runtime: 'Durasi', tagline: 'Tagline'
   };
-  function labelFor(k) { return LABELS[k] || k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()); }
+
+  function labelFor(k) {
+    return LABELS[k] || k.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  }
 
   function toast(msg, type = 'info') {
     const el = document.createElement('div');
@@ -71,9 +88,11 @@
     el.textContent = msg;
     toastWrap.appendChild(el);
     setTimeout(() => {
-      el.style.opacity = '0'; el.style.transition = 'opacity .25s';
-      setTimeout(() => el.remove(), 250);
-    }, 2200);
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(6px)';
+      el.style.transition = 'all 0.25s ease';
+      setTimeout(() => el.remove(), 260);
+    }, 2400);
   }
 
   // ============ UNWRAP ============
@@ -84,16 +103,19 @@
       const keys = Object.keys(d);
       if (keys.length === 0) break;
 
-      // Single wrapper key
       if (keys.length === 1 && ['data', 'result', 'response', 'results', 'payload', 'output'].includes(keys[0])) {
-        d = d[keys[0]]; depth++; continue;
+        d = d[keys[0]];
+        depth++;
+        continue;
       }
-      // { ok/status/success, data: {...} } pattern
+
       const dk = keys.find(k => ['data', 'result', 'response', 'results'].includes(k));
       if (dk && keys.length <= 4) {
         const inner = d[dk];
         if (inner !== null && inner !== undefined && (typeof inner === 'object')) {
-          d = inner; depth++; continue;
+          d = inner;
+          depth++;
+          continue;
         }
       }
       break;
@@ -135,16 +157,16 @@
     media.images.slice(0, 12).forEach(url => {
       html += `<div class="pv-media">
         <a href="${esc(url)}" target="_blank" rel="noopener" class="pv-media-click">
-          <img src="${esc(url)}" alt="" loading="lazy" />
+          <img src="${esc(url)}" alt="" loading="lazy" onerror="this.parentElement.parentElement.style.display='none'" />
         </a>
-        <a href="${esc(url)}" download target="_blank" class="pv-dl" title="Download">↓</a>
+        <a href="${esc(url)}" download target="_blank" class="pv-dl" title="Unduh">↓</a>
       </div>`;
     });
 
     media.videos.slice(0, 3).forEach(url => {
       html += `<div class="pv-media">
         <video src="${esc(url)}" controls playsinline preload="metadata"></video>
-        <a href="${esc(url)}" download target="_blank" class="pv-dl" title="Download">↓</a>
+        <a href="${esc(url)}" download target="_blank" class="pv-dl" title="Unduh">↓</a>
       </div>`;
     });
 
@@ -154,7 +176,7 @@
 
     media.files.slice(0, 6).forEach(url => {
       const name = decodeURIComponent(url.split('/').pop().split('?')[0]) || 'File';
-      const ext = name.split('.').pop().toUpperCase().slice(0, 4);
+      const ext = (name.split('.').pop() || 'FILE').toUpperCase().slice(0, 4);
       html += `<a href="${esc(url)}" target="_blank" rel="noopener" class="pv-file">
         <div class="pv-file-icon">${esc(ext)}</div>
         <div class="pv-file-info"><div class="pv-file-name">${esc(name)}</div></div>
@@ -189,7 +211,28 @@
   }
 
   function renderStringArray(arr) {
-    return '<div class="pv-pills">' + arr.slice(0, 30).map(v => `<span class="pv-pill">${esc(String(v))}</span>`).join('') + '</div>';
+    return '<div class="pv-pills">' +
+      arr.slice(0, 30).map(v => `<span class="pv-pill">${esc(String(v))}</span>`).join('') +
+      '</div>';
+  }
+
+  function renderCardMeta(item, title, desc, img) {
+    const skip = new Set([
+      title, desc, img,
+      item.link, item.url, item.href, item.source,
+      item.thumbnail, item.thumb, item.image, item.cover,
+      item.picture, item.photo, item.avatar, item.poster
+    ]);
+    const fields = Object.entries(item).filter(([k, v]) =>
+      v !== null && v !== undefined && v !== '' &&
+      typeof v !== 'object' &&
+      !skip.has(v) &&
+      String(v).length < 100
+    ).slice(0, 5);
+    if (!fields.length) return '';
+    return `<div class="pv-card-meta">${fields.map(([k, v]) =>
+      `<span>${esc(labelFor(k))}: <b>${esc(String(v))}</b></span>`
+    ).join('')}</div>`;
   }
 
   function renderCardList(arr) {
@@ -199,9 +242,13 @@
         html += `<div class="pv-text">${esc(String(item))}</div>`;
         return;
       }
-      const img = item.thumbnail || item.thumb || item.image || item.cover || item.picture || item.photo || item.avatar || item.poster;
-      const title = item.title || item.judul || item.name || item.nama || item.headline || item.surah_name || item.surah;
-      const desc = item.description || item.deskripsi || item.content || item.summary || item.excerpt || item.arti || item.indo || item.translation;
+      const img = item.thumbnail || item.thumb || item.image || item.cover ||
+                  item.picture || item.photo || item.avatar || item.poster;
+      const title = item.title || item.judul || item.name || item.nama ||
+                    item.headline || item.surah_name || item.surah;
+      const desc = item.description || item.deskripsi || item.content ||
+                   item.summary || item.excerpt || item.arti || item.indo ||
+                   item.translation || item.overview;
       const link = item.link || item.url || item.href || item.source;
       const isImg = img && isUrl(img);
 
@@ -224,19 +271,6 @@
     return html;
   }
 
-  function renderCardMeta(item, title, desc, img) {
-    const skip = new Set([title, desc, img, item.link, item.url, item.href, item.source,
-      item.thumbnail, item.thumb, item.image, item.cover, item.picture, item.photo, item.avatar, item.poster]);
-    const fields = Object.entries(item).filter(([k, v]) =>
-      v !== null && v !== undefined && v !== '' && typeof v !== 'object' &&
-      !skip.has(v) && String(v).length < 100
-    ).slice(0, 5);
-    if (!fields.length) return '';
-    return `<div class="pv-card-meta">${fields.map(([k, v]) =>
-      `<span>${esc(labelFor(k))}: <b>${esc(String(v))}</b></span>`
-    ).join('')}</div>`;
-  }
-
   function renderContent(data) {
     if (data === null || data === undefined) return '';
     if (typeof data === 'string' || typeof data === 'number' || typeof data === 'boolean') {
@@ -249,8 +283,6 @@
     }
     if (typeof data === 'object') {
       let html = renderFields(data);
-
-      // Nested arrays
       for (const [k, v] of Object.entries(data)) {
         if (Array.isArray(v) && v.length > 0) {
           if (typeof v[0] === 'object') {
@@ -268,12 +300,10 @@
   function renderPreview(data) {
     const clean = unwrap(data);
 
-    // If clean is array of objects → card list
     if (Array.isArray(clean) && clean.length && typeof clean[0] === 'object') {
       return renderCardList(clean) + renderMedia(findMedia(clean));
     }
 
-    // If clean is object with one big array field → that field first
     if (clean && typeof clean === 'object' && !Array.isArray(clean)) {
       const arrayEntry = Object.entries(clean).find(([k, v]) =>
         Array.isArray(v) && v.length > 0 && typeof v[0] === 'object'
@@ -281,7 +311,6 @@
       if (arrayEntry) {
         const [key, arr] = arrayEntry;
         let html = '';
-        // Other scalar fields as header
         const otherFields = {};
         Object.entries(clean).forEach(([k, v]) => {
           if (k !== key && v !== null && v !== undefined && typeof v !== 'object' && v !== '') {
@@ -296,7 +325,6 @@
       }
     }
 
-    // Otherwise top-level media + content
     const media = findMedia(clean);
     let html = renderMedia(media);
     html += renderContent(clean);
@@ -305,11 +333,14 @@
 
   // ============ CHIPS ============
   function renderChips() {
-    const html = [`<button class="chip ${state.category === 'All' ? 'active' : ''}" data-cat="All">Semua <span class="count">${window.TOOLS.length}</span></button>`]
-      .concat(window.CATEGORIES.map(c => {
-        const n = window.TOOLS.filter(t => t.category === c).length;
-        return `<button class="chip ${state.category === c ? 'active' : ''}" data-cat="${esc(c)}">${esc(c)} <span class="count">${n}</span></button>`;
-      })).join('');
+    const html = [
+      `<button class="chip ${state.category === 'All' ? 'active' : ''}" data-cat="All">Semua<span class="count">${window.TOOLS.length}</span></button>`
+    ].concat(window.CATEGORIES.map(c => {
+      const n = window.TOOLS.filter(t => t.category === c).length;
+      const active = state.category === c ? 'active' : '';
+      return `<button class="chip ${active}" data-cat="${esc(c)}">${esc(c)}<span class="count">${n}</span></button>`;
+    })).join('');
+
     chipsWrap.innerHTML = html;
     chipsWrap.querySelectorAll('.chip').forEach(b =>
       b.addEventListener('click', () => {
@@ -326,28 +357,36 @@
     const filtered = window.TOOLS.filter(t => {
       if (state.category !== 'All' && t.category !== state.category) return false;
       if (!q) return true;
-      return (t.name.toLowerCase().includes(q) ||
+      return (
+        t.name.toLowerCase().includes(q) ||
         t.description.toLowerCase().includes(q) ||
-        t.category.toLowerCase().includes(q));
+        t.category.toLowerCase().includes(q)
+      );
     });
 
     if (!filtered.length) {
-      gridWrap.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted);font-size:13px;">Tidak ada tool yang cocok.</div>`;
+      gridWrap.innerHTML = `<div style="text-align:center;padding:48px 20px;color:var(--muted);font-size:13px;">Tidak ada tool yang cocok.</div>`;
       return;
     }
 
     const groups = {};
-    filtered.forEach(t => { (groups[t.category] = groups[t.category] || []).push(t); });
+    filtered.forEach(t => {
+      (groups[t.category] = groups[t.category] || []).push(t);
+    });
 
     const singleGroup = state.category !== 'All' || state.query;
     let html = '';
+    let globalIdx = 0;
+
     for (const [cat, tools] of Object.entries(groups)) {
       if (!singleGroup) {
         html += `<div class="group-title">${esc(cat)}<span class="line"></span></div>`;
       }
       html += '<div class="grid">';
       tools.forEach(t => {
-        html += `<button class="card" data-id="${esc(t.id)}">
+        const delay = Math.min(globalIdx * 18, 280);
+        globalIdx++;
+        html += `<button class="card" data-id="${esc(t.id)}" style="animation-delay:${delay}ms">
           <span class="card-cat">${esc(t.category)}</span>
           <div class="card-title">${esc(t.name)}</div>
           <div class="card-desc">${esc(t.description)}</div>
@@ -374,7 +413,7 @@
 
     let form = '';
     if (!tool.params.length) {
-      form = `<p style="font-size:13px;color:var(--muted);">Tidak butuh parameter. Tekan <b>Jalankan</b>.</p>`;
+      form = `<p style="font-size:13px;color:var(--muted);text-align:center;padding:12px 0;">Tidak butuh parameter. Tekan <b style="color:var(--text);">Jalankan</b>.</p>`;
     } else {
       tool.params.forEach(p => {
         form += `<div class="form-field">
@@ -405,11 +444,13 @@
     document.getElementById('btnReset').onclick = () => openModal(tool);
 
     modalBg.classList.add('open');
-    modalBg.scrollTop = 0;
+    modalBg.querySelector('.modal').scrollTop = 0;
+    document.body.style.overflow = 'hidden';
   }
 
   function closeModal() {
     modalBg.classList.remove('open');
+    document.body.style.overflow = '';
     state.tool = null;
   }
 
@@ -422,15 +463,18 @@
     const values = {}, files = {};
     modalForm.querySelectorAll('[data-param]').forEach(el => {
       const k = el.dataset.param;
-      if (el.type === 'file') files[k] = el.files && el.files[0] ? el.files[0] : null;
-      else values[k] = el.value;
+      if (el.type === 'file') {
+        files[k] = el.files && el.files[0] ? el.files[0] : null;
+      } else {
+        values[k] = el.value;
+      }
     });
 
     const btn = document.getElementById('btnRun');
     const previewArea = document.getElementById('previewArea');
     btn.disabled = true;
     btn.textContent = 'Memproses...';
-    previewArea.innerHTML = `<div class="preview-loading"><div class="spinner"></div>Sedang diproses...</div>`;
+    previewArea.innerHTML = `<div class="preview-loading"><div class="spinner"></div><span>Sedang diproses...</span></div>`;
 
     const hasFile = Object.values(files).some(f => f);
 
@@ -440,10 +484,13 @@
         'x-proxy-method': tool.method,
         'x-proxy-query': JSON.stringify(values)
       };
+
       let body;
       if (hasFile) {
         const fd = new FormData();
-        Object.entries(files).forEach(([k, f]) => { if (f) fd.append(k, f); });
+        Object.entries(files).forEach(([k, f]) => {
+          if (f) fd.append(k, f);
+        });
         body = fd;
       } else if (tool.method === 'POST') {
         headers['Content-Type'] = 'application/json';
@@ -454,7 +501,9 @@
       const json = await res.json();
 
       if (json.ok === false) {
-        throw new Error((json.data && (json.data.message || json.data.error)) || 'Gagal memproses');
+        const errData = json.data;
+        const msg = errData && (errData.message || errData.error) || 'Gagal memproses';
+        throw new Error(msg);
       }
 
       const html = renderPreview(json.data);
@@ -475,11 +524,22 @@
     }
   }
 
-  // ============ INIT ============
-  searchInput.addEventListener('input', e => { state.query = e.target.value; renderGrid(); });
-  modalBg.addEventListener('click', e => { if (e.target === modalBg) closeModal(); });
+  // ============ EVENTS ============
+  searchInput.addEventListener('input', e => {
+    state.query = e.target.value;
+    renderGrid();
+  });
+
+  modalBg.addEventListener('click', e => {
+    if (e.target === modalBg) closeModal();
+  });
   document.getElementById('modalClose').addEventListener('click', closeModal);
 
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modalBg.classList.contains('open')) closeModal();
+  });
+
+  // ============ INIT ============
   renderChips();
   renderGrid();
 })();
